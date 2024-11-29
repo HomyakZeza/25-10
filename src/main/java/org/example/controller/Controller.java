@@ -51,15 +51,22 @@ public class Controller extends MenuState{
 
         undoMachine = new UndoMachine();
 
+
         MenuCreator menuCreator = MenuCreator.getInstance();
         menuCreator.setState(menuState);
         menuCreator.setModel(model);
+
+        undoMachine.setUndoActionListener(menuCreator.getUndoButton());
+        undoMachine.setRedoActionListener(menuCreator.getRedoButton());
+
         frame.setJMenuBar(menuCreator.createMenuBar());
-        frame.add(menuCreator.createToolBar(), BorderLayout.NORTH);
+        frame.add(menuCreator.createToolBar(), BorderLayout.WEST);
     }
     public void getPointOne(Point2D p){
         AppAction actionDraw1 = menuState.getAction();
         actionDraw1.mousePressed(p);
+        undoMachine.add(actionDraw1);
+        undoMachine.updateButtons();
     }
     public void getPointTwo(Point2D p){
         AppAction actionDraw1 = menuState.getAction();

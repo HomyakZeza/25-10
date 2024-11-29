@@ -1,12 +1,15 @@
 package org.example.controller.state;
 
+import lombok.Getter;
 import org.example.controller.action.AppAction;
 
 import java.util.LinkedList;
 
 public abstract class UndoRedoState {
     private static final int MAX_UNDO = 50;
+    @Getter
     private final LinkedList<AppAction> undoActivityList;
+    @Getter
     private final LinkedList<AppAction> redoActivityList;
 
     protected UndoRedoState(LinkedList<AppAction> undoActivityList, LinkedList<AppAction> redoActivity) {
@@ -24,13 +27,5 @@ public abstract class UndoRedoState {
         if(undoActivityList.size() != MAX_UNDO){
             undoActivityList.add(action);
         }
-    }
-
-    public LinkedList<AppAction> getUndoActivityList() {
-        return undoActivityList;
-    }
-
-    public LinkedList<AppAction> getRedoActivityList() {
-        return redoActivityList;
     }
 }

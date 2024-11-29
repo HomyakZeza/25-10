@@ -22,6 +22,9 @@ public class MenuCreator extends MenuState {
     private MenuState state;
 
     private JRadioButtonMenuItem rgbButton;
+
+    private CommandActionListener undoButton;
+    private CommandActionListener redoButton;
     private MenuCreator(){
         menuBar = createMenuBar();
     }
@@ -177,7 +180,7 @@ public class MenuCreator extends MenuState {
 
     public JToolBar createToolBar(){
         ArrayList<Action> subMenuItems = createToolBarItems();
-        JToolBar jToolBar = new JToolBar();
+        JToolBar jToolBar = new JToolBar(JToolBar.VERTICAL);
 
         subMenuItems.forEach(jToolBar::add);
 
@@ -235,5 +238,13 @@ public class MenuCreator extends MenuState {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    public CommandActionListener getUndoButton() {
+        return undoButton;
+    }
+
+    public CommandActionListener getRedoButton() {
+        return redoButton;
     }
 }
