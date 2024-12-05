@@ -38,8 +38,12 @@ public class UndoMachine {
         return !undoRedoState.getRedoActivityList().isEmpty();
     }
     public void updateButtons(){
-        undoActionListener.setEnabled(isEnableUndo());
-        redoActionListener.setEnabled(isEnableRedo());
+        if (undoActionListener != null) {
+            undoActionListener.setEnabled(isEnableUndo());
+        }
+        if (redoActionListener != null) {
+            redoActionListener.setEnabled(isEnableRedo());
+        }
     }
 
     public void add(AppAction action) {

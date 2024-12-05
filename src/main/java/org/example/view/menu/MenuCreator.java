@@ -2,8 +2,10 @@ package org.example.view.menu;
 
 
 import org.example.controller.MenuState;
+import org.example.controller.action.ActionDelete;
 import org.example.controller.action.ActionDraw;
 import org.example.controller.action.ActionMove;
+import org.example.controller.action.AppAction;
 import org.example.model.Model;
 import org.example.model.shape.factory.ShapeType;
 
@@ -154,31 +156,41 @@ public class MenuCreator extends MenuState {
         return fillMenu;
     }
 
-    private JMenu createActionMenu(){
+    private JMenu createActionMenu() {
         JMenu actionMenu = new JMenu("Действие");
         ButtonGroup group = new ButtonGroup();
 
+        // Создаём элементы для меню действия
         JRadioButtonMenuItem move = new JRadioButtonMenuItem("Двигать");
         JRadioButtonMenuItem draw = new JRadioButtonMenuItem("Рисовать");
+        JRadioButtonMenuItem delete = new JRadioButtonMenuItem("Удалить");
+
 
         move.addActionListener(e -> {
             state.setAction(new ActionMove(model));
-
         });
         actionMenu.add(move);
         group.add(move);
 
+
         draw.addActionListener(e -> {
             state.setAction(new ActionDraw(model));
-
         });
         actionMenu.add(draw);
         group.add(draw);
 
+
+        delete.addActionListener(e -> {
+            state.setAction(new ActionDelete(model));
+        });
+        actionMenu.add(delete);
+        group.add(delete);
+
         return actionMenu;
     }
 
-    public JToolBar createToolBar(){
+
+    public JToolBar createToolBar() {
         ArrayList<Action> subMenuItems = createToolBarItems();
         JToolBar jToolBar = new JToolBar(JToolBar.VERTICAL);
 
@@ -186,6 +198,7 @@ public class MenuCreator extends MenuState {
 
         return jToolBar;
     }
+
 
     private ArrayList<Action> createToolBarItems(){
         ArrayList<Action> menuItems = new ArrayList<>();
@@ -223,6 +236,11 @@ public class MenuCreator extends MenuState {
         ImageIcon moveIco = moveUrl == null ? null : new ImageIcon(moveUrl);
         AppCommand moveCommand = new SwitchAction(state, new ActionMove(model));
         menuItems.add(new CommandActionListener("Двигать", moveIco, moveCommand));
+
+        URL deleteUrl = getClass().getClassLoader().getResource("ico/delete.jpg");
+        ImageIcon deleteIco = deleteUrl == null ? null : new ImageIcon(deleteUrl);
+        AppCommand deleteCommand = new SwitchAction(state, new ActionDelete(model));
+        menuItems.add(new CommandActionListener("Удалить", deleteIco, deleteCommand));
 
         return menuItems;
     }

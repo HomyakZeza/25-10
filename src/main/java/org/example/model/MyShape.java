@@ -51,4 +51,8 @@ public class MyShape implements Cloneable{
         return clone;
 
     }
+    public boolean contains(Point2D point) {
+        return shape != null && shape.contains(point);
+    }
+
 }

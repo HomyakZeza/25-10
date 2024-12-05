@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.controller.action.ActionDelete;
 import org.example.controller.action.ActionDraw;
 import org.example.controller.action.AppAction;
 import org.example.controller.state.UndoMachine;
@@ -12,8 +13,7 @@ import org.example.view.menu.MenuCreator;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-// TODO: 24.10.2024 Сделать singleton класс
-public class Controller extends MenuState{
+public class Controller extends MenuState {
     private Model model;
     private MyFrame frame;
 
@@ -27,14 +27,14 @@ public class Controller extends MenuState{
     private UndoMachine undoMachine;
     private ActionDraw actionDraw;
 
-    public static synchronized Controller getInstance(){
-        if (instance == null){
+    public static synchronized Controller getInstance() {
+        if (instance == null) {
             instance = new Controller();
         }
         return instance;
     }
-    public Controller() {
 
+    public Controller() {
         menuState = new MenuState();
         ShapeCreator shapeCreator = ShapeCreator.getInstance();
         shapeCreator.configure(menuState);
@@ -51,7 +51,6 @@ public class Controller extends MenuState{
 
         undoMachine = new UndoMachine();
 
-
         MenuCreator menuCreator = MenuCreator.getInstance();
         menuCreator.setState(menuState);
         menuCreator.setModel(model);
@@ -62,45 +61,21 @@ public class Controller extends MenuState{
         frame.setJMenuBar(menuCreator.createMenuBar());
         frame.add(menuCreator.createToolBar(), BorderLayout.WEST);
     }
-    public void getPointOne(Point2D p){
-        AppAction actionDraw1 = menuState.getAction();
-        actionDraw1.mousePressed(p);
-        undoMachine.add(actionDraw1);
+
+    public void getPointOne(Point2D p) {
+        AppAction currentAction = menuState.getAction();
+        currentAction.mousePressed(p);
+        currentAction.execute();
+        undoMachine.add(currentAction);
         undoMachine.updateButtons();
     }
-    public void getPointTwo(Point2D p){
-        AppAction actionDraw1 = menuState.getAction();
-        actionDraw1.mouseDragged(p);
+
+    public void getPointTwo(Point2D p) {
+        AppAction currentAction = menuState.getAction();
+        currentAction.mouseDragged(p);
     }
 
     public void draw(Graphics2D g2) {
         model.draw(g2);
     }
 }
-/*    public Controller() {
-        model = new Model();
-        MyShape sampleShape = new MyShape(new Rectangle2D.Double());
-        FillBehavior fill = new Fill();
-        fill.setColor(Color.BLUE);
-        sampleShape.setFb(fill);
-
-        actionDraw = new ActionDraw(model, sampleShape);
-        model.setMyShape(sampleShape);
-        panel = new MyPanel(this, actionDraw);
-
-/*model = new Model();
-        MyShape sampleShape = new MyShape(new Rectangle2D.Double());
-        sampleShape.setFb(new NoFill());
-        actionDraw = new ActionDraw(model, sampleShape);
-        model.setMyShape(sampleShape);
-        panel = new MyPanel(this);
-
-        model.addObserver(panel);
-
-        frame = new MyFrame();
-        frame.setPanel(panel);
-
-        MenuController menuController = MenuController.getInstance();
-        menuController.setActionDraw(actionDraw);
-        frame.setJMenuBar(menuController.createMenuBar());
-*/
