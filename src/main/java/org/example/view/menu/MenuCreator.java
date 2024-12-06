@@ -6,6 +6,9 @@ import org.example.controller.action.ActionDelete;
 import org.example.controller.action.ActionDraw;
 import org.example.controller.action.ActionMove;
 import org.example.controller.action.AppAction;
+import org.example.controller.state.StateDisableUndoDisableRedo;
+import org.example.controller.state.UndoMachine;
+import org.example.controller.state.UndoRedoState;
 import org.example.model.Model;
 import org.example.model.shape.factory.ShapeType;
 
@@ -27,6 +30,8 @@ public class MenuCreator extends MenuState {
 
     private CommandActionListener undoButton;
     private CommandActionListener redoButton;
+
+    private UndoMachine undoMachine;
     private MenuCreator(){
         menuBar = createMenuBar();
     }
@@ -242,6 +247,16 @@ public class MenuCreator extends MenuState {
         AppCommand deleteCommand = new SwitchAction(state, new ActionDelete(model));
         menuItems.add(new CommandActionListener("Удалить", deleteIco, deleteCommand));
 
+        URL undoUrl = getClass().getClassLoader().getResource("ico/undo_16x16.png");
+        ImageIcon undoIco = undoUrl == null ? null : new ImageIcon(undoUrl);
+        AppCommand undoCommand = new SwitchUndo(undoMachine);
+        menuItems.add(new CommandActionListener("Undo", undoIco, undoCommand));
+
+        URL redoUrl = getClass().getClassLoader().getResource("ico/redo_16x16.png");
+        ImageIcon redoIco = redoUrl == null ? null : new ImageIcon(redoUrl);
+        AppCommand redoCommand = new SwitchRedo(undoMachine);
+        menuItems.add(new CommandActionListener("Redo", redoIco, redoCommand));
+
         return menuItems;
     }
 
@@ -256,6 +271,10 @@ public class MenuCreator extends MenuState {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+
+    public void setUndoMachine(UndoMachine undoMachine) {
+        this.undoMachine = undoMachine;
     }
 
     public CommandActionListener getUndoButton() {
