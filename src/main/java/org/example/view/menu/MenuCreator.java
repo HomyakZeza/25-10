@@ -6,6 +6,7 @@ import org.example.controller.action.ActionDelete;
 import org.example.controller.action.ActionDraw;
 import org.example.controller.action.ActionMove;
 import org.example.controller.action.AppAction;
+import org.example.controller.state.UndoMachine;
 import org.example.model.Model;
 import org.example.model.shape.factory.ShapeType;
 
@@ -27,6 +28,7 @@ public class MenuCreator extends MenuState {
 
     private CommandActionListener undoButton;
     private CommandActionListener redoButton;
+    private UndoMachine undoMachine;
     private MenuCreator(){
         menuBar = createMenuBar();
     }
@@ -242,6 +244,30 @@ public class MenuCreator extends MenuState {
         AppCommand deleteCommand = new SwitchAction(state, new ActionDelete(model));
         menuItems.add(new CommandActionListener("Удалить", deleteIco, deleteCommand));
 
+
+        // Undo button
+        URL undoUrl = getClass().getClassLoader().getResource("ico/undo_16x16.png");
+        ImageIcon undoIco = undoUrl == null ? null : new ImageIcon(undoUrl);
+        AppCommand undoCommand = new SwitchUndo(undoMachine);
+        CommandActionListener undoAction = new CommandActionListener("Назад", undoIco, undoCommand);
+        undoAction.setEnabled(false); // Initially disabled
+        menuItems.add(undoAction);
+
+        // Redo button
+        URL redoUrl = getClass().getClassLoader().getResource("ico/redo_16x16.png");
+        ImageIcon redoIco = redoUrl == null ? null : new ImageIcon(redoUrl);
+        AppCommand redoCommand = new SwitchRedo(undoMachine);
+        CommandActionListener redoAction = new CommandActionListener("Вперед", redoIco, redoCommand);
+        redoAction.setEnabled(false); // Initially disabled
+        menuItems.add(redoAction);
+
+        // Setting undo and redo buttons in UndoMachine
+        if (undoMachine != null) {
+            undoMachine.setUndo(undoAction);
+            undoMachine.setRedo(redoAction);
+        }
+
+
         return menuItems;
     }
 
@@ -256,6 +282,9 @@ public class MenuCreator extends MenuState {
 
     public void setModel(Model model) {
         this.model = model;
+    }
+    public void setUndoMachine(UndoMachine undoMachine) {
+        this.undoMachine = undoMachine;
     }
 
     public CommandActionListener getUndoButton() {

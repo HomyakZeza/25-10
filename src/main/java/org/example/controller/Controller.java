@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import org.example.controller.action.ActionDelete;
 import org.example.controller.action.ActionDraw;
 import org.example.controller.action.AppAction;
 import org.example.controller.state.UndoMachine;
@@ -54,9 +53,10 @@ public class Controller extends MenuState {
         MenuCreator menuCreator = MenuCreator.getInstance();
         menuCreator.setState(menuState);
         menuCreator.setModel(model);
+        menuCreator.setUndoMachine(undoMachine);
 
-        undoMachine.setUndoActionListener(menuCreator.getUndoButton());
-        undoMachine.setRedoActionListener(menuCreator.getRedoButton());
+        undoMachine.setUndo(menuCreator.getUndoButton());
+        undoMachine.setRedo(menuCreator.getRedoButton());
 
         frame.setJMenuBar(menuCreator.createMenuBar());
         frame.add(menuCreator.createToolBar(), BorderLayout.WEST);

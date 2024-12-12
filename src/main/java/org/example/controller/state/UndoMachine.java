@@ -1,6 +1,5 @@
 package org.example.controller.state;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.example.controller.action.AppAction;
 import org.example.view.menu.CommandActionListener;
@@ -10,10 +9,10 @@ import java.util.LinkedList;
 public class UndoMachine {
     private UndoRedoState undoRedoState;
     @Setter
-    private CommandActionListener undoActionListener;
+    private CommandActionListener undo;
 
     @Setter
-    private CommandActionListener redoActionListener;
+    private CommandActionListener redo;
 
     public UndoMachine() {
         LinkedList<AppAction> undoList = new LinkedList<>();
@@ -22,11 +21,18 @@ public class UndoMachine {
     }
 
     public void executeRedo() {
-        undoRedoState = undoRedoState.redo();
+        if (isEnableRedo()) {
+            undoRedoState = undoRedoState.redo();
+            updateButtons();
+        }
     }
 
     public void executeUndo() {
-        undoRedoState = undoRedoState.undo();
+        if (isEnableUndo()) {
+            undoRedoState = undoRedoState.undo();
+            updateButtons();
+        }
+
     }
 
     public boolean isEnableUndo() {
@@ -38,18 +44,15 @@ public class UndoMachine {
         return !undoRedoState.getRedoActivityList().isEmpty();
     }
     public void updateButtons(){
-        if (undoActionListener != null) {
-            undoActionListener.setEnabled(isEnableUndo());
-        }
-        if (redoActionListener != null) {
-            redoActionListener.setEnabled(isEnableRedo());
-        }
+        undo.setEnabled(isEnableUndo());
+        redo.setEnabled(isEnableRedo());
+
     }
 
     public void add(AppAction action) {
         undoRedoState.clearHistory();
         undoRedoState.addAction(action);
-        //TODO: Определить переход по состоянию
         undoRedoState = new StateEnableUndoDisableRedo(undoRedoState.getUndoActivityList(), undoRedoState.getRedoActivityList());
+        updateButtons();
     }
 }
